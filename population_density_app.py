@@ -1,6 +1,6 @@
 import streamlit as st
-import plotly.express as px
 import pandas as pd
+import folium
 
 # Sample data (population density by country)
 data = pd.DataFrame({
@@ -27,11 +27,7 @@ st.write(f'Population: {selected_data["Population"].values[0]:,}')
 st.write(f'Area: {selected_data["Area (km²)"].values[0]:,} km²')
 st.write(f'Population Density: {selected_data["Population Density (people/km²)"].values[0]:,.2f} people/km²')
 
-# Create a map using Plotly
-fig = px.choropleth(locations=["USA", "Canada", "Mexico", "Brazil", "India"],
-                    locationmode="country names",
-                    color=[data[data['Country'] == country]["Population Density (people/km²)"].values[0] for country in ["USA", "Canada", "Mexico", "Brazil", "India"]],
-                    hover_name=["USA", "Canada", "Mexico", "Brazil", "India"],
-                    color_continuous_scale=px.colors.sequential.Plasma,
-                    title=f'Population Density Map for {selected_country}')
-st.plotly_chart(fig)
+# Create a map using Folium
+m = folium.Map(location=[20, 0], zoom_start=2)
+folium.Marker([0, 0], tooltip=f'{selected_country}').add_to(m)
+st.write(m)
