@@ -1,4 +1,5 @@
 import streamlit as st
+pip install streamlit plotly
 import plotly.express as px
 import pandas as pd
 
