@@ -1,7 +1,9 @@
+pip install streamlit geopandas matplotlib pandas
+
 import streamlit as st
 import pandas as pd
-pip install folium
-import folium
+import geopandas as gpd
+import matplotlib.pyplot as plt
 
 # Sample data (population density by country)
 data = pd.DataFrame({
@@ -28,7 +30,15 @@ st.write(f'Population: {selected_data["Population"].values[0]:,}')
 st.write(f'Area: {selected_data["Area (km²)"].values[0]:,} km²')
 st.write(f'Population Density: {selected_data["Population Density (people/km²)"].values[0]:,.2f} people/km²')
 
-# Create a map using Folium
-m = folium.Map(location=[20, 0], zoom_start=2)
-folium.Marker([0, 0], tooltip=f'{selected_country}').add_to(m)
-st.write(m)
+# Load a world map shapefile
+world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+
+# Merge population density data with world map data
+merged = world.set_index('name').join(data.set_index('Country'))
+
+# Create a simple choropleth map
+fig, ax = plt.subplots(1, 1, figsize=(10, 10))
+merged.boundary.plot(ax=ax, linewidth=0.8, color='k')
+merged.plot(column='Population Density (people/km²)', cmap='coolwarm', linewidth=0.8, ax=ax, legend=True)
+ax.set_title(f'Population Density Map for {selected_country}')
+st.pyplot(fig)
