@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+pip install folium
 import folium
 
 # Sample data (population density by country)
